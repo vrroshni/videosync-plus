@@ -2,7 +2,7 @@
 import NavLinks from "./NavLinks.vue";
 </script>
 <template>
-  <header className="z-[999] flex text-center justify-center">
+  <header className="z-[10] flex text-center justify-center">
     <div
       className="fixed top-4  rounded-full flex justify-center items-center w-1/2  h-14 border border-white
                         border-opacity-40 bg-white  bg-opacity-80 shadow-lg 

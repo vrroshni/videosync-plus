@@ -8,6 +8,7 @@ class Video(models.Model):
     video_title = models.CharField(max_length=255)
     video_description = models.TextField()
     video_file = models.FileField(upload_to='videos/')
+    video_thumbnail = models.ImageField(upload_to='videosthumbnails/',blank=True, null=True)
     subtitle_file = models.FileField(upload_to='subtitles/', blank=True, null=True)
     added_date = models.DateTimeField(default=timezone.now)
      

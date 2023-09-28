@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Videos from "../components/Videos.vue";
-import UploadVideo from "../components/UploadVideo.vue";
+import UploadView from "../views/UploadView.vue";
 
  const router = createRouter({
     history: createWebHistory(),
     routes: [
       {
         path: "/",
-        component: UploadVideo,
+        component: UploadView,
         meta:{
           enterClass:"animate__animated animate__fadeInLeft",
           leaveClass:"animate__animated animate__fadeOutRight"

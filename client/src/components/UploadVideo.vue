@@ -1,57 +1,63 @@
+<script setup>
+import { ref, computed } from 'vue';
+import { useVideoStore } from '../stores/video';
+import SubtitleForm from '../components/SubtitleForm.vue';
+import InputVideo from '../components/InputVideo.vue';
+import VideoHolder from '../components/VideoHolder.vue';
+import { useRouter } from 'vue-router';
+
+
+
+const videoStore = useVideoStore()
+const showSubtitle = ref(false)
+const showButton = ref(true)
+const router = useRouter()
+
+const showSubtitleForm = () => {
+  showSubtitle.value = true;
+  showButton.value = false;
+
+  
+  // Use a timeout to ensure that the DOM elements are updated before scrolling
+  setTimeout(() => {
+    const el = document.getElementById('subtitleform');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, 0);
+};
+
+
+
+const uploadVideo = async () => {
+    try {
+        await videoStore.uploadNewVideo()
+        router.push('/videos')
+        
+    } catch (error) {
+
+
+    }
+}
+
+</script>
 <template>
-        <div  class="  h-full w-screen sm:px-8 md:px-16 sm:py-8">
-      <main class="container mx-auto max-w-screen-lg h-full">
-        <article
-          aria-label="File Upload Modal"
-          class="relative h-full flex flex-col bg-white shadow-xl rounded-md">
-          <section class="h-full p-8 w-full flex flex-col">
-            <header
-              class="border-dashed border-2 border-gray-400 py-12 flex flex-col justify-center items-center"
-            > 
-            <label class="cursor-pointer">
-              <ul id="gallery" class="flex flex-1 flex-wrap -m-1">
-                <li
-                  id="empty"
-                  class="h-full w-full text-center flex flex-col justify-center items-center"
-                >
-                  <img
-                    class="mx-auto w-32"
-                    src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
-                    alt="no data"
-                  />
-                  <span class="text-small text-gray-500"
-                    >No files selected</span
-                  >
-                </li>
-              </ul>
-              <p
-                class="mb-3 font-semibold text-gray-900 flex flex-wrap justify-center px-2 py-2 mt-4 bg-gray-300"
-              >
-                <span>Upload a Video</span>
-              </p>
-              <input  type="file"  class="hidden" />
-            </label>
+  <div class="border-dashed border-2 border-gray-400 py-12 flex flex-col justify-center items-center">
+    <InputVideo v-if="!videoStore.newVideo.videoFile" />
+    <VideoHolder v-else />
+  </div>
 
-            </header>
-          </section>
-
-         
-          <!-- <footer class="flex justify-end px-8 pb-8 pt-4">
-            <button
-              id="submit"
-              class="rounded-sm px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none"
-            >
-              Upload now
-            </button>
-            <button
-              id="cancel"
-              class="ml-3 rounded-sm px-3 py-1 hover:bg-gray-300 focus:shadow-outline focus:outline-none"
-            >
-              Cancel
-            </button>
-          </footer> -->
-        </article>
-      </main>
-    </div>
-
+  <div class="flex justify-end gap-3 mt-6"
+    v-if="videoStore.newVideo.videoFile && videoStore.newVideo.videoDescription && videoStore.newVideo.videoTitle && showButton">
+    <button @click="showSubtitleForm"
+      class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Add
+      Subtitle
+    </button>
+    <button @click="uploadVideo"
+      class="px-6 py-2 leading-5 text-white transition-colors ml-3 duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Upload
+      Video</button>
+  </div>
+<div id="subtitleform">
+  <SubtitleForm v-show="showSubtitle" />
+</div>
 </template>
