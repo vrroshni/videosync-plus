@@ -17,6 +17,7 @@
     "vue": "^3.3.4",
     "vue-material-design-icons": "^5.2.0",
     "vue-router": "^4.2.5",
+    "vue-toastification": "^2.0.0-rc.5",
     "vue3-toastify": "^0.1.13",
     "vuesax": "^3.12.2"
   },
@@ -25,6 +26,7 @@
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.30",
     "tailwindcss": "^3.3.3",
+    "video.js": "^8.5.2",
     "vite": "^4.4.5"
   }
 }

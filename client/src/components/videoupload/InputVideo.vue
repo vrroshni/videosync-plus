@@ -22,10 +22,10 @@ const onChange = (e) => {
     return
   }
 
-  if (file.size > maxSize) {
-    error.value = 'File size exceeds the 10MB limit. Please choose a smaller file.';
-    return
-  }
+  // if (file.size > maxSize) {
+  //   error.value = 'File size exceeds the 10MB limit. Please choose a smaller file.';
+  //   return
+  // }
 
   const videoSrc = URL.createObjectURL(file);
   videoStore.$patch((state) => {
@@ -41,7 +41,7 @@ const onChange = (e) => {
 <template>
 
 
-  <label class="cursor-pointer">
+  <label class="cursor-pointer py-3">
     <ul id="gallery" class="flex flex-1 flex-wrap -m-1">
       <li id="empty" class="h-full w-full text-center flex flex-col justify-center items-center">
         <img class="mx-auto w-32"

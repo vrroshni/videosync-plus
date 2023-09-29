@@ -11,7 +11,7 @@ const videoStore = useVideoStore()
 const currentStep = ref(0)
 const error = ref(0)
 const router = useRouter()
-
+const emit=defineEmits('subtitleFinished')
 
 const handleSubtitle = () => {
     const { subtitle } = videoStore.newSubtitle;
@@ -23,6 +23,7 @@ const handleSubtitle = () => {
 
     currentStep.value = 0
     videoStore.addSubtitleData(steps[currentStep.value].name)
+    error.value = ""
     return true
 }
 
@@ -38,8 +39,8 @@ const areTimestampsFilled = () => {
     if (videoStore.active === "starting timestamp" && !startingTimestamp) {
         error.value = "choose Starting timestamp from video preview"
         return true
-
     }
+
     if (videoStore.active === "ending timestamp" && !endingTimestamp) {
         error.value = "choose Ending timestamp from video preview"
         return true
@@ -64,16 +65,11 @@ onMounted(() => {
 
 
 const uploadVideo = async () => {
-    try {
+
         if (!handleSubtitle())
         return
-        await videoStore.uploadNewVideo()
-        router.push('/videos')
 
-    } catch (error) {
-
-
-    }
+    emit('subtitleFinished')
 }
 
 </script>
@@ -105,11 +101,11 @@ const uploadVideo = async () => {
                 <button v-if="currentStep < steps.length - 1" @click="nextStep"
                     class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Next</button>
                 <button v-if="currentStep === steps.length - 1" @click="addNewSubtitle"
-                    class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-600 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-900">Add
+                    class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-500 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-900">Add
                     a New Subtitle</button>
                 <button v-if="currentStep === steps.length - 1" @click="uploadVideo"
-                    class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Upload
-                    Video</button>
+                    class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Subtitle Finished
+                    </button>
             </div>
         </div>
     </div>

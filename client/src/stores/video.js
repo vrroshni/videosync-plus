@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
-import { generateUniqueId } from '../config/helpers';
+import { generateUniqueId, secondsToTimestamp, toast } from '../config/helpers';
 import { getallVideos, uploadVideo } from '../api/videoApi';
-
 
 
 export const useVideoStore = defineStore('videos', {
@@ -10,8 +9,12 @@ export const useVideoStore = defineStore('videos', {
             videoTitle: '',
             videoDescription: '',
             videoFile: '',
+            videoThumbnail:'',
             subtitles: []
         },
+    
+
+        uploadProgress:0,
         allVideos: [],
 
         newSubtitle: {
@@ -26,8 +29,16 @@ export const useVideoStore = defineStore('videos', {
 
     actions: {
         chooseTimestamp(time) {
+
+
+            time = secondsToTimestamp(time)
+
+
             if (this.hasDuplicateTimestamps(time)) {
-                alert("choose different timestamps")
+                
+                toast.error("Subtitle for this timestamp already exist",
+                { position: "bottom-center"}
+            )
                 return
             }
 
@@ -36,8 +47,17 @@ export const useVideoStore = defineStore('videos', {
                 this.newSubtitle.startingTimestamp = time
             }
             if (this.active === "ending timestamp") {
+                console.log(time, this.newSubtitle.startingTimestamp)
+                if (time < this.newSubtitle.startingTimestamp) {
+                    toast.error("Ending timestamp must be greater than the starting timestamp.",
+                        { position: "bottom-center"}
+                    )
+                    return
+                }
+                console.log("hello")
                 this.timeStamp = time
                 this.newSubtitle.endingTimestamp = time
+                console.log("hello")
             }
 
         },
@@ -48,7 +68,7 @@ export const useVideoStore = defineStore('videos', {
         // Check if any subtitle in the array has the same start and end timestamps
         hasDuplicateTimestamps(timestamp) {
             const { subtitles } = this.newVideo;
-            return subtitles.some((subtitle) => subtitle.startingTimestamp === timestamp || subtitle.endingTimestamp === timestamp);
+            return subtitles.some((subtitle) => timestamp >= subtitle.startingTimestamp && timestamp <= subtitle.endingTimestamp);
         },
 
 
@@ -83,32 +103,36 @@ export const useVideoStore = defineStore('videos', {
         async uploadNewVideo() {
             try {
 
-                if (!this.newVideo.videoTitle.trim() || !this.newVideo.videoDescription.trim() || !this.newVideo.videoFile) {
-                    throw new Error('Video title, description, and file are required.');
+                if (!this.newVideo.videoTitle.trim() || !this.newVideo.videoDescription.trim() || !this.newVideo.videoFile ||  !this.newVideo.videoThumbnail) {
+                    throw new Error('Video title, description , thumbnail and Video file are required.');
                 }
 
                 // Validate subtitles if there are any
                 if (this.newVideo.subtitles.length > 0) {
-                    const subtitlesValid = this.newVideo.subtitles.every(subtitle => (
-                        subtitle.startingTimestamp.trim() && subtitle.endingTimestamp.trim() && subtitle.subtitle.trim()
-                    ));
+                    console.log(this.newVideo.subtitles)
+                    const subtitlesValid = this.newVideo.subtitles.every(subtitle => subtitle.startingTimestamp && subtitle.endingTimestamp && subtitle.subtitle.trim());
 
                     if (!subtitlesValid) {
                         throw new Error('Subtitles must have non-empty starting timestamp, ending timestamp, and subtitle.');
                     }
                 }
+
                 this.previewVideo = ''
-                const newVideo = await uploadVideo(this.newVideo)
+                const newVideo = await uploadVideo(this.newVideo,(progress) => {
+                    this.uploadProgress = progress; // Update uploadProgress in the store
+                })
                 this.newVideo = {
                     videoTitle: '',
                     videoDescription: '',
                     videoFile: '',
                     subtitles: []
                 }
+                this.uploadProgress=0
                 this.allVideos.push(newVideo)
-
             } catch (error) {
+                this.uploadProgress=0
                 throw error
+
             }
 
         },
@@ -116,10 +140,10 @@ export const useVideoStore = defineStore('videos', {
         async getallVideos() {
             try {
 
-                const data =await getallVideos()
-                this.allVideos=data
-                console.log(this.allVideos,"videosssssss")
-                
+                const data = await getallVideos()
+                this.allVideos = data
+                console.log(this.allVideos, "videosssssss")
+
             } catch (error) {
                 throw error
 
