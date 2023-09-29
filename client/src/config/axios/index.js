@@ -1,8 +1,9 @@
 import axios from 'axios'
 // baseURL: import.meta.env.VITE_API_BASE_URL,
-export const API_URL='http://52.195.229.198/'
-export const IMAGE_API_URL='http://52.195.229.198'
+export const API_URL='//videosync.roshnivr.com/'
+export const IMAGE_API_URL='http://videosync.roshnivr.com'
 
+// http://videosync.roshnivr.com/
 const axiosClient = axios.create({
   baseURL: API_URL,
 });
