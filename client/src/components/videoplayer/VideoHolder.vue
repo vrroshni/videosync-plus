@@ -1,6 +1,6 @@
 <script setup>
-import { useVideoStore } from '../stores/video';
-import PreviewSubtitle from './PreviewSubtitle.vue';
+import { useVideoStore } from '../../stores/video';
+import PreviewSubtitle from '../subtitle/PreviewSubtitle.vue';
 
 const videoStore = useVideoStore()
 

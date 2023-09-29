@@ -1,7 +1,7 @@
 <script setup>
-import { useVideoStore } from '../stores/video';
+import { useVideoStore } from '../../stores/video';
 import { ref } from 'vue';
-import ErrorMessage from '../components/ErrorMessage.vue';
+import ErrorMessage from '../ErrorMessage.vue';
 
 const videoStore = useVideoStore()
 const error = ref({

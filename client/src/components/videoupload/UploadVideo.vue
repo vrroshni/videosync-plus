@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useVideoStore } from '../stores/video';
-import SubtitleForm from '../components/SubtitleForm.vue';
-import InputVideo from '../components/InputVideo.vue';
-import VideoHolder from '../components/VideoHolder.vue';
+import { useVideoStore } from '../../stores/video';
+import SubtitleForm from '../subtitle/SubtitleForm.vue';
+import InputVideo from './InputVideo.vue';
+import VideoHolder from '../videoplayer/VideoHolder.vue';
 import { useRouter } from 'vue-router';
 
 

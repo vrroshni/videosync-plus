@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import ErrorMessage from '../components/ErrorMessage.vue';
-import { useVideoStore } from '../stores/video';
+import ErrorMessage from '../../components/ErrorMessage.vue';
+import { useVideoStore } from '../../stores/video';
 const { step } = defineProps(['step'])
 const emit = defineEmits(['formValueChange'])
 const error = ref('')

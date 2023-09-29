@@ -1,5 +1,5 @@
 <script setup>
-import { useVideoStore } from '../stores/video';
+import { useVideoStore } from '../../stores/video';
 import { onMounted } from 'vue';
 const videoStore = useVideoStore()
 onMounted(() => videoStore.getallVideos())

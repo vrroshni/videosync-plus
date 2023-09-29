@@ -1,6 +1,6 @@
 <script setup>
-import UploadVideo from '../components/UploadVideo.vue';
-import VideoForm from '../components/VideoForm.vue';
+import UploadVideo from '../components/videoupload/UploadVideo.vue';
+import VideoForm from '../components/videoupload/VideoForm.vue';
 </script>
 <template>
     <div class="h-full w-screen sm:px-8 md:px-16 sm:py-8 z-0 ">

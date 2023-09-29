@@ -1,10 +1,10 @@
 <script setup>
-import MuItiStepInput from '../components/MuItiStepInput.vue';
+import MuItiStepInput from './MuItiStepInput.vue';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useVideoStore } from '../stores/video';
-import ErrorMessage from './ErrorMessage.vue';
-import { steps } from '../config/helpers';
+import { useVideoStore } from '../../stores/video';
+import ErrorMessage from '../ErrorMessage.vue';
+import { steps } from '../../config/helpers';
 
 
 const videoStore = useVideoStore()

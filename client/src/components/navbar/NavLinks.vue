@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { links } from "../utils/data";
+import { links } from "../../utils/data";
 const navlinks = ref(links);
 </script>
 

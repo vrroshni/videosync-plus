@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Videos from "../components/Videos.vue";
+import Videos from "../components/videos/Videos.vue";
 import UploadView from "../views/UploadView.vue";
 
  const router = createRouter({
