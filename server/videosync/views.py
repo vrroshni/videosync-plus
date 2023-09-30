@@ -39,11 +39,8 @@ class VideosList(APIView):
                     video_instance=Video.objects.get(video_title=data['video_title'])
                     video_instance.subtitle_file.save(f"{data['video_title']}.srt", ContentFile(srt_content.encode('utf-8')))
                 return Response(status=status.HTTP_201_CREATED)
-            
-            print(serializer.errors,"eeeeeeeeeeeee")
             return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            print(e,"eeeeeeeeeeeee")
             return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

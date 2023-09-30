@@ -23,6 +23,7 @@ export const useVideoStore = defineStore('videos', {
             subtitle: ''
         },
         previewVideo: '',
+        previewThumbnail:'',
         timeStamp: '',
         active: ''
     }),
@@ -54,10 +55,9 @@ export const useVideoStore = defineStore('videos', {
                     )
                     return
                 }
-                console.log("hello")
                 this.timeStamp = time
                 this.newSubtitle.endingTimestamp = time
-                console.log("hello")
+
             }
 
         },

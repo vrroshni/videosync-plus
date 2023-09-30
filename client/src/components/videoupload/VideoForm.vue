@@ -39,8 +39,6 @@ const onChange = (e) => {
             e.target.value = ""
             return;
         } else {
-
-
             const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif']; // Define allowed file types
             if (!allowedFileTypes.includes(file.type)) {
                 error.value[name] = 'Unsupported file type. Please upload a valid image (JPEG, PNG, GIF).';
@@ -48,10 +46,18 @@ const onChange = (e) => {
                 return;
             }
         }
+
+
         videoStore.$patch((state) => {
             state.newVideo.videoThumbnail = e.target.files[0];
-            console.log(state.newVideo.videoThumbnail,"uploaded time")
-            
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                videoStore.previewThumbnail = event.target.result;
+            };
+
+            reader.readAsDataURL(file);
+
         });
 
 
@@ -91,18 +97,57 @@ const onChange = (e) => {
             <!-- Display validation error message if it exists -->
             <ErrorMessage v-show="error.videoDescription" :message="error.videoDescription" />
         </div>
-        <div class="w-full pb-3">
+        <div class="w-full pb-3 flex justify-between gap-2">
+            <div class="w-5/6">
+                <label for="file_input">Upload file</label>
+                <input name="videoThumbnail" @input="onChange" accept="image/*"
+                    class="block px-4 py-2 w-full mt-2  text-gray-700 bg-gray-50 rounded-lg border border-gray-300  focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent "
+                    aria-describedby="file_input_help" id="file_input" type="file">
+                <p class="mt-1 text-sm text-gray-500 " id="file_input_help">SVG, PNG, JPG or GIF (MAX.
+                    800x400px).</p>
+                <ErrorMessage v-show="error.videoThumbnail" :message="error.videoThumbnail" />
 
-            <label for="file_input">Upload file</label>
-            <input name="videoThumbnail" @input="onChange" accept="image/*"
-                class="block px-4 py-2 w-full mt-2  text-gray-700 bg-gray-50 rounded-lg border border-gray-300  focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent "
-                aria-describedby="file_input_help" id="file_input" type="file">
-            <p class="mt-1 text-sm text-gray-500 " id="file_input_help">SVG, PNG, JPG or GIF (MAX.
-                800x400px).</p>
-            <ErrorMessage v-show="error.videoThumbnail" :message="error.videoThumbnail" />
 
+            </div>
+            <div class="w-1/6 flex justify-center items-center">
+                <div class="image-input w-20  h-20 " :style="{ 'background-image': `url(${videoStore.previewThumbnail})` }">
+                    <span v-if="!videoStore.previewThumbnail" class="placeholder rounded-lg">
+                        Preview
+                    </span>
+
+                </div>
+
+
+            </div>
 
             <!-- Display validation error message if it exists -->
         </div>
     </div>
 </template>
+
+<style scoped>
+.image-input {
+    display: block;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center center;
+}
+
+
+.placeholder {
+    background: #F0F0F0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    font-size: 18px;
+}
+
+.placeholder:hover {
+
+    background: #E0E0E0;
+
+}
+</style>
