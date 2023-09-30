@@ -45,3 +45,13 @@ export const getVideo = async (id) => {
         throw error
     }
 }
+export const searchVideos = async (search) => {
+    try {
+        console.log(search,"search")
+        console.log(search,"search")
+        const { data } = await axiosClient.get(`videosync/search/${search}/`, config)
+        return data
+    } catch (error) {
+        throw error
+    }
+}

@@ -5,6 +5,7 @@ from .models import Video, Subtitle
 from .serializers import VideoSerializer, SubtitleSerializer, CreateVideoSerializer
 from .helpers import create_srt_from_json
 from django.core.files.base import ContentFile
+from django.db.models import Q
 # Create your views here.
 
 
@@ -57,4 +58,18 @@ class VideoDetails(APIView):
             else:
                 return Response('This Video does not exists', status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class SearchVideos(APIView):
+    """
+    List  video,  update or delete  a  video.
+    """
+
+    def get(self, request, search):
+        try:
+                videos=Video.objects.filter(Q(video_title__icontains=search) | Q(video_description__icontains=search) )
+                serializer = VideoSerializer(videos,many=True)
+                return Response(serializer.data)
+        except Exception as e:
+            print(e)
             return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
