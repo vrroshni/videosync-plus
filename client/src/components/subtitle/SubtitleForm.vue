@@ -1,3 +1,7 @@
+
+<!-- This component represents a multi-step subtitle creation form. It guides the user through the process of adding subtitles to a video. -->
+<!-- It displays the current step, handles timestamp input, and validates the subtitle data. -->
+<!-- The user can navigate through steps, and upon completion, it allows the user to add more subtitles or finish the subtitle creation process. -->
 <script setup>
 import MuItiStepInput from './MuItiStepInput.vue';
 import { ref, onMounted, computed } from 'vue';
@@ -13,6 +17,13 @@ const error = ref(0)
 const router = useRouter()
 const emit=defineEmits('subtitleFinished')
 
+
+/**
+ * Handles subtitle creation and validation.
+ * @returns {boolean} Returns true if the subtitle is successfully handled and false if there's an error.
+ */
+
+
 const handleSubtitle = () => {
     const { subtitle } = videoStore.newSubtitle;
     if (!subtitle) {
@@ -27,12 +38,20 @@ const handleSubtitle = () => {
     return true
 }
 
+
+ /**
+ * Adds a new subtitle entry.
+ */
 const addNewSubtitle = () => {
     if (!handleSubtitle())
         return
 }
 
 
+/**
+ * Checks if starting and ending timestamps are filled and displays an error if they are not.
+ * @returns {boolean} Returns true if there's an error, otherwise false.
+ */
 const areTimestampsFilled = () => {
     error.value = ''
     const { startingTimestamp, endingTimestamp } = videoStore.newSubtitle;
@@ -48,9 +67,10 @@ const areTimestampsFilled = () => {
     }
 };
 
-
+/**
+ * Moves to the next step in the subtitle creation process.
+ */
 const nextStep = () => {
-
     if (areTimestampsFilled())
         return
 
@@ -63,7 +83,9 @@ onMounted(() => {
     videoStore.newSubtitle = {}
 })
 
-
+/**
+ * Handles the final step of uploading the video with subtitles.
+ */
 const uploadVideo = async () => {
 
         if (!handleSubtitle())
@@ -76,6 +98,7 @@ const uploadVideo = async () => {
 
 
 <template>
+    <!-- Subtitle Creation Form -->
     <div>
         <div
             class="border-none border-2 border-gray-400 py-4 flex flex-col justify-center items-center text-gray-500 gap-2">
@@ -95,16 +118,21 @@ const uploadVideo = async () => {
             </ol>
         </div>
         <div class="w-full">
+
+            <!-- Subtitle Input Component -->
             <MuItiStepInput :step="steps[currentStep]" />
             <ErrorMessage v-show="error" :message="error" />
+
+
+              <!-- Buttons for Navigation and Completion -->
             <div class="flex justify-end gap-3 mt-6">
                 <button v-if="currentStep < steps.length - 1" @click="nextStep"
                     class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Next</button>
                 <button v-if="currentStep === steps.length - 1" @click="addNewSubtitle"
                     class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-500 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-900">Add
-                    a New Subtitle</button>
+                    another</button>
                 <button v-if="currentStep === steps.length - 1" @click="uploadVideo"
-                    class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Subtitle Finished
+                    class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-800 focus:outline-none focus:bg-purple-900">Add Subtitle
                     </button>
             </div>
         </div>

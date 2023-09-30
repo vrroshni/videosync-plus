@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Video, Subtitle
-from .serializers import VideoSerializer, SubtitleSerializer, CreateVideoSerializer
+from .models import Video, VideoView
+from .serializers import VideoSerializer
 from .helpers import create_srt_from_json
 from django.core.files.base import ContentFile
 from django.db.models import Q
@@ -15,14 +15,21 @@ class VideosList(APIView):
     """
 
     def get(self, request):
+        """
+        Get a list of all videos.
+        """
         try:
             videos = Video.objects.all()
             serializer = VideoSerializer(videos, many=True)
             return Response(serializer.data)
         except Exception as e:
-            return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(e)
+            return Response("Something went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
+        """
+        Upload a new video.
+        """        
         try:
             
             data = request.data
@@ -41,11 +48,9 @@ class VideosList(APIView):
                     video_instance=Video.objects.get(video_title=data['video_title'])
                     video_instance.subtitle_file.save(f"{data['video_title']}.srt", ContentFile(srt_content.encode('utf-8')))
                 return Response(status=status.HTTP_201_CREATED)
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
-            print(e,"eeeeeeeeeeee")
-            return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response("Something went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class VideoDetails(APIView):
@@ -54,6 +59,9 @@ class VideoDetails(APIView):
     """
 
     def get(self, request, id):
+        """
+        Get details of a specific video by ID.
+        """
         try:
             if video := Video.objects.get(id=id):
                 serializer = VideoSerializer(video)
@@ -61,18 +69,37 @@ class VideoDetails(APIView):
             else:
                 return Response('This Video does not exists', status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response("Something went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+    def patch(self, request, id):
+        """
+        Update the view count of a video.
+        """
+        try:
+            if video := Video.objects.get(id=id):
+                video.view_count += 1
+                video.save()
+                VideoView.objects.create(video=video)
+                serializer = VideoSerializer(video)
+                return Response(serializer.data)
+            else:
+                return Response('This Video does not exists', status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response("Something went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class SearchVideos(APIView):
     """
-    List  video,  update or delete  a  video.
+    Search for videos based on a search query.
     """
 
     def get(self, request, search):
+        """
+        Get a list of videos matching the search query in video title or description.
+        """
         try:
                 videos=Video.objects.filter(Q(video_title__icontains=search) | Q(video_description__icontains=search) )
                 serializer = VideoSerializer(videos,many=True)
                 return Response(serializer.data)
         except Exception as e:
-            print(e)
-            return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response("Something went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)

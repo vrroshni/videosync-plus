@@ -2,10 +2,19 @@ import { useToast } from "vue-toastification";
 import loadingIcon from '../assets/img/ploading.gif';
 import slider from '../assets/img/state.svg';
 import indicatorIcon from '../assets/img/indicator.svg';
-export { loadingIcon, slider, indicatorIcon }
+
+
+// Export icons need for player
+export {
+  loadingIcon,
+  slider,
+  indicatorIcon
+}
+
+// Initialize toast for displaying notifications.
 export const toast = useToast();
 
-
+// Define steps for a multi-step process.
 export const steps = [
 
   {
@@ -25,14 +34,15 @@ export const steps = [
   }
 ]
 
-export const timestampRegex = /^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/; // Regex for hh:mm:ss format
+
+// Generate a unique ID based on the current timestamp and random alphanumeric characters.
 export const generateUniqueId = () => {
   const timestamp = new Date().getTime();
   const randomId = Math.random().toString(36).substring(2, 10); // Random alphanumeric ID
   return `${timestamp}-${randomId}`;
 }
 
-
+// Convert seconds to timestamp format (hh:mm:ss.SSS).
 export const secondsToTimestamp = (duration) => {
   const hours = Math.floor(duration / 3600);
   const minutes = Math.floor((duration % 3600) / 60);
@@ -42,11 +52,15 @@ export const secondsToTimestamp = (duration) => {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
 }
 
+
+// Parse a timestamp in the format hh:mm:ss.SSS into milliseconds.
 export const parseTimestamp = (timestamp) => {
   const [hours, minutes, seconds, milliseconds] = timestamp.split(/[:.]+/).map(Number);
   return hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
 }
 
+
+// Format a date as a string in the format "day month, year".
 export const formatDate = (formatdate) => {
   const date = new Date(formatdate);
   const monthNames = [
@@ -60,6 +74,8 @@ export const formatDate = (formatdate) => {
 }
 
 
+
+// Generate an SRT file content from an array of subtitles.
 export const generateSRT = (subtitles) => {
 
   let srtContent = '';
@@ -77,7 +93,16 @@ export const generateSRT = (subtitles) => {
     srtContent += formattedSubtitle;
   });
 
+  // Create a Blob with the SRT content and return its URL.
   const srtBlob = new Blob([srtContent], { type: 'text/plain' });
   return window.URL.createObjectURL(srtBlob);
 
+}
+
+
+
+
+// Generate a random HSL color.
+export function getRandomColor() {
+  return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
 }

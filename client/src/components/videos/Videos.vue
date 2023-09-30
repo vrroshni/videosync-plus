@@ -1,14 +1,13 @@
 <script setup>
 import Video from './Video.vue';
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { useVideoStore } from '../../stores/video';
+
 import NoVideos from './NoVideos.vue';
 const videoStore = useVideoStore()
-const router = useRouter()
+
+
 await new Promise((res) => setTimeout(res, 1000))
 await videoStore.getallVideos()
-
 
 </script>
 

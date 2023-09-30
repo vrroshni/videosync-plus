@@ -3,13 +3,12 @@ import { useVideoStore } from '../../stores/video';
 import { ref } from 'vue';
 import ErrorMessage from '../ErrorMessage.vue';
 
-const videoStore = useVideoStore()
+const videoStore = useVideoStore();
 const error = ref({
     videoTitle: '',
     videoDescription: '',
     videoThumbnail: '',
-})
-
+});
 
 const onChange = (e) => {
     const { name, value } = e.target;
@@ -20,34 +19,33 @@ const onChange = (e) => {
     // Perform validation here (e.g., check minimum character requirement)
     if (name === 'videoTitle' && value.length < 5) {
         error.value[name] = 'Video Title must be at least 5 characters long.';
-        videoStore.newVideo.videoTitle = ""
+        videoStore.newVideo.videoTitle = "";
         return;
     }
 
     if (name === 'videoDescription' && value.length < 10) {
         error.value[name] = 'Video Description must be at least 10 characters long.';
-        videoStore.newVideo.videoDescription = ""
+        videoStore.newVideo.videoDescription = "";
         return;
     }
-
 
     // Validate the video thumbnail
     if (name === 'videoThumbnail') {
         const file = e.target.files[0]; // Get the selected file
         if (!file) {
             error.value[name] = 'Please select a video thumbnail file.';
-            e.target.value = ""
+            e.target.value = "";
             return;
         } else {
             const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif']; // Define allowed file types
             if (!allowedFileTypes.includes(file.type)) {
                 error.value[name] = 'Unsupported file type. Please upload a valid image (JPEG, PNG, GIF).';
-                e.target.value = ""
+                e.target.value = "";
                 return;
             }
         }
 
-
+        // Update the store with the selected video thumbnail
         videoStore.$patch((state) => {
             state.newVideo.videoThumbnail = e.target.files[0];
             const reader = new FileReader();
@@ -57,22 +55,16 @@ const onChange = (e) => {
             };
 
             reader.readAsDataURL(file);
-
         });
 
-
-        return
+        return;
     }
-
 
     // Update the store only if there are no validation errors
     videoStore.$patch((state) => {
         state.newVideo[name] = value;
     });
-
 }
-
-
 </script>
 <template>
     <div class="border-none border-2 border-gray-400  flex flex-col justify-center items-center text-gray-500 gap-2">

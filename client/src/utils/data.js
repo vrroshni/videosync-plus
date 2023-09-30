@@ -9,6 +9,11 @@ export const links = [
       name: 'Videos',
       link: '/videos'
     },
+    {
+      id: 3,
+      name: 'Analytics',
+      link: '/analytics'
+    },
 
   
   ]

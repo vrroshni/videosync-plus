@@ -29,8 +29,12 @@ export const useVideoStore = defineStore('videos', {
     }),
 
     actions: {
-        chooseTimestamp(time) {
 
+        /**
+     * Choose a timestamp for subtitles.
+     * @param {number} time - The selected timestamp.
+     */
+        chooseTimestamp(time) {
 
             time = secondsToTimestamp(time)
 
@@ -71,11 +75,19 @@ export const useVideoStore = defineStore('videos', {
 
 
 
-        // Check if any subtitle in the array has the same start and end timestamps
-        hasDuplicateTimestamps(timestamp) {
+    /**
+     * Check if any subtitle in the array has the same start and end timestamps.
+     * @param {string} timestamp - The timestamp to check.
+     * @returns {boolean} True if there are duplicates, otherwise false.
+     */        hasDuplicateTimestamps(timestamp) {
             const { subtitles } = this.newVideo;
             return subtitles.some((subtitle) => timestamp >= subtitle.startingTimestamp && timestamp <= subtitle.endingTimestamp);
         },
+
+
+        /**
+        * Synchronize subtitles with the video and generate an SRT file.
+        */
         syncWithVideo() {
             this.srtFile = generateSRT(this.newVideo.subtitles)
             console.log(this.srtFile)
@@ -87,6 +99,10 @@ export const useVideoStore = defineStore('videos', {
         },
 
 
+        /**
+         * Add subtitle data to the new video.
+         * @param {string} step - The current step (e.g., 'starting timestamp').
+         */
         addSubtitleData(step) {
             this.active = step
             this.newSubtitle.id = generateUniqueId();
@@ -97,12 +113,39 @@ export const useVideoStore = defineStore('videos', {
 
 
 
+        /**
+         * Reset the active step and timestamp.
+         * @param {string} step - The step to reset.
+         */
         reset(step) {
             this.active = step
             this.timeStamp = ''
 
         },
 
+        /**
+         * Update the view count for a video.
+         * @param {string} videoId - The ID of the video.
+         */
+        async viewCount(videoId) {
+            try {
+                const video = await watchedVideo(videoId)
+                const videoIndex = this.allVideos.findIndex((video) => video.id === videoId);
+                if (videoIndex !== -1) {
+                    this.allVideos[videoIndex].view_count = video.view_count;
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+
+
+        },
+
+        /**
+         * Delete a subtitle by its ID.
+         * @param {string} subtitleId - The ID of the subtitle to delete.
+         */
         deleteSubtitleById(subtitleId) {
             const index = this.newVideo.subtitles.findIndex(
                 (subtitle) => subtitle.id === subtitleId
@@ -114,7 +157,9 @@ export const useVideoStore = defineStore('videos', {
 
 
 
-
+        /**
+         * Upload a new video and validate its data.
+         */
         async uploadNewVideo() {
             try {
 
@@ -152,6 +197,9 @@ export const useVideoStore = defineStore('videos', {
 
         },
 
+        /**
+         * Get all videos and update the store's state.
+         */
         async getallVideos() {
             try {
 

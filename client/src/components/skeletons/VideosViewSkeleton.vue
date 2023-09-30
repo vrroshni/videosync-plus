@@ -17,12 +17,10 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script setup>
 import AnimatedPlaceHolder from '../elements/AnimatedPlaceHolder.vue';
-
-
 </script>
 
-<style lang="scss" scoped></style>

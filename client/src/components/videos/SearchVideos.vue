@@ -9,7 +9,14 @@ const videoSearchResults = ref(null);
 const searchError = ref(null);
 const router = useRouter()
 
+// Function to fetch search results
 const getSearchResults = () => {
+    
+// The setTimeout function is used to introduce a brief delay
+//  before sending the API request for search results, 
+// improving user experience by reducing the number of unnecessary requests 
+// during user input. 
+
     clearTimeout(queryTimeout.value);
     queryTimeout.value = setTimeout(async () => {
         if (searchQuery.value !== "") {
@@ -51,4 +58,3 @@ const getSearchResults = () => {
 
 
 
-<style lang="scss" scoped></style>
