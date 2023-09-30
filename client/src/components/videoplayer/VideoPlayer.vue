@@ -6,7 +6,8 @@ import { slider, loadingIcon, indicatorIcon } from '../../config/helpers';
 const videoStore = useVideoStore()
 
 const { videoSrc, subtitleSrc, thumbnailSrc } = defineProps(['videoSrc', 'subtitleSrc', 'thumbnailSrc'])
-
+console.log(subtitleSrc)
+console.log(videoStore.srtFile)
 const player = ref(null)
 
 const options = reactive({

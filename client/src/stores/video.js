@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { generateUniqueId, parseTimestamp, secondsToTimestamp, toast } from '../config/helpers';
+import { generateSRT, generateUniqueId, parseTimestamp, secondsToTimestamp, toast } from '../config/helpers';
 import { getallVideos, uploadVideo } from '../api/videoApi';
 
 
@@ -9,12 +9,12 @@ export const useVideoStore = defineStore('videos', {
             videoTitle: '',
             videoDescription: '',
             videoFile: '',
-            videoThumbnail:'',
+            videoThumbnail: '',
             subtitles: []
         },
-    
 
-        uploadProgress:0,
+        srtFile: '',
+        uploadProgress: 0,
         allVideos: [],
 
         newSubtitle: {
@@ -23,7 +23,7 @@ export const useVideoStore = defineStore('videos', {
             subtitle: ''
         },
         previewVideo: '',
-        previewThumbnail:'',
+        previewThumbnail: '',
         timeStamp: '',
         active: ''
     }),
@@ -36,11 +36,13 @@ export const useVideoStore = defineStore('videos', {
 
 
             if (this.hasDuplicateTimestamps(time)) {
-                
+
                 toast.error("Subtitle for this timestamp already exist",
-                { position: "bottom-center",
-                autoClose: 1000,}
-            )
+                    {
+                        position: "bottom-center",
+                        autoClose: 1000,
+                    }
+                )
                 return
             }
 
@@ -52,9 +54,10 @@ export const useVideoStore = defineStore('videos', {
                 console.log(time, this.newSubtitle.startingTimestamp)
                 if (parseTimestamp(time) < parseTimestamp(this.newSubtitle.startingTimestamp)) {
                     toast.error("Ending timestamp must be greater than the starting timestamp.",
-                        { position: "bottom-center",
-                        autoClose: 1000,
-                    }
+                        {
+                            position: "bottom-center",
+                            autoClose: 1000,
+                        }
                     )
                     return
                 }
@@ -72,6 +75,15 @@ export const useVideoStore = defineStore('videos', {
         hasDuplicateTimestamps(timestamp) {
             const { subtitles } = this.newVideo;
             return subtitles.some((subtitle) => timestamp >= subtitle.startingTimestamp && timestamp <= subtitle.endingTimestamp);
+        },
+        syncWithVideo() {
+            this.srtFile = generateSRT(this.newVideo.subtitles)
+            console.log(this.srtFile)
+            const a = document.createElement('a');
+            a.href = this.srtFile;
+            a.download = 'subtitles.srt';
+            console.log(a)
+            a.click();
         },
 
 
@@ -106,7 +118,7 @@ export const useVideoStore = defineStore('videos', {
         async uploadNewVideo() {
             try {
 
-                if (!this.newVideo.videoTitle.trim() || !this.newVideo.videoDescription.trim() || !this.newVideo.videoFile ||  !this.newVideo.videoThumbnail) {
+                if (!this.newVideo.videoTitle.trim() || !this.newVideo.videoDescription.trim() || !this.newVideo.videoFile || !this.newVideo.videoThumbnail) {
                     throw new Error('Video title, description , thumbnail and Video file are required.');
                 }
 
@@ -121,7 +133,7 @@ export const useVideoStore = defineStore('videos', {
                 }
 
                 this.previewVideo = ''
-                const newVideo = await uploadVideo(this.newVideo,(progress) => {
+                const newVideo = await uploadVideo(this.newVideo, (progress) => {
                     this.uploadProgress = progress; // Update uploadProgress in the store
                 })
                 this.newVideo = {
@@ -130,10 +142,10 @@ export const useVideoStore = defineStore('videos', {
                     videoFile: '',
                     subtitles: []
                 }
-                this.uploadProgress=0
+                this.uploadProgress = 0
                 this.allVideos.push(newVideo)
             } catch (error) {
-                this.uploadProgress=0
+                this.uploadProgress = 0
                 throw error
 
             }
@@ -149,7 +161,7 @@ export const useVideoStore = defineStore('videos', {
 
             } catch (error) {
                 toast.error("Something went wrong")
-                
+
 
             }
         }
