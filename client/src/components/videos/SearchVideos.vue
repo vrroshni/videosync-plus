@@ -23,21 +23,21 @@ const getSearchResults = () => {
             return;
         }
         videoSearchResults.value = null;
-    }, 300);
+    }, 600);
 };
 </script>
 <template>
-    <main class="container text-gray-700 flex items-center justify-center">
-        <div class="pt-4 mb-8 relative w-3/4 md:w-1/2 ">
+    <main class="container text-gray-900 flex items-center justify-center">
+        <div class="pt-8 mb-8 relative w-3/4 md:w-1/2 ">
             <input type="text" v-model="searchQuery" @input="getSearchResults" placeholder="Search for a city or state"
-                class="py-2 px-1 w-full bg-transparent border-b focus:border-gray focus:outline-none focus:shadow-[0px_1px_0_0_#004E71]" />
-            <ul class="absolute bg-purple-200  w-full shadow-md py-2 px-1 top-[66px]"
+                class="py-2 px-1 w-full bg-transparent border-b  border-gray-500 focus:outline-none text-gray-900 placeholder:text-gray-600 placeholder:text-base focus:shadow-[0px_1px_0_0_#004E71]" />
+            <ul class="absolute bg-purple-100 z-20 w-full shadow-md py-2 px-1 top-[75px]"
                 v-if="videoSearchResults">
-                <p class="py-2" v-if="searchError">
+                <p class="py-2 text-red-500" v-if="searchError">
                     Sorry, something went wrong, please try again.
                 </p>
-                <p class="py-2" v-if="!searchError && videoSearchResults.length === 0">
-                    No results match your query, try a different term.
+                <p class="py-2 text-red-500" v-if="!searchError && videoSearchResults.length === 0">
+                    No results match your search, Give a different try.
                 </p>
                 <template v-else>
                     <li v-for="videoresult in videoSearchResults" :key="videoresult.id" class="py-2 cursor-pointer" @click="router.push(`/videos/${videoresult.id}`)">

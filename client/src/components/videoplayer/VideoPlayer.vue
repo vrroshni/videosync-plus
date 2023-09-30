@@ -2,7 +2,7 @@
 import { ref, onMounted, nextTick, reactive } from 'vue';
 import Artplayer from 'artplayer';
 import { useVideoStore } from '../../stores/video';
-
+import { slider, loadingIcon, indicatorIcon } from '../../config/helpers';
 const videoStore = useVideoStore()
 
 const { videoSrc, subtitleSrc, thumbnailSrc } = defineProps(['videoSrc', 'subtitleSrc', 'thumbnailSrc'])
@@ -12,6 +12,7 @@ const player = ref(null)
 const options = reactive({
     container: player.value,
     url: videoSrc || '',
+    poster:  thumbnailSrc || '',
     volume: 0.5,
     isLive: false,
     muted: true,
@@ -22,17 +23,14 @@ const options = reactive({
     screenshot: true,
     setting: true,
     loop: true,
-    flip: true,
     playbackRate: true,
     aspectRatio: true,
     fullscreen: true,
     fullscreenWeb: true,
-    subtitleOffset: true,
     miniProgressBar: true,
     mutex: true,
     backdrop: true,
     playsInline: true,
-    autoPlayback: true,
     airplay: true,
     theme: '#23ade5',
     lang: navigator.language.toLowerCase(),
@@ -43,19 +41,7 @@ const options = reactive({
         {
             width: 200,
             html: 'Subtitle',
-            tooltip: 'Bilingual',
-            // icon: '<img width="22" heigth="22" src="/src/assets/img/subtitle.svg">',
             selector: [
-                {
-                    html: 'Display',
-                    tooltip: 'Show',
-                    switch: true,
-                    onSwitch: function (item) {
-                        item.tooltip = item.switch ? 'Hide' : 'Show';
-                        art.subtitle.show = !item.switch;
-                        return !item.switch;
-                    },
-                },
                 {
                     default: true,
                     html: 'English',
@@ -63,46 +49,19 @@ const options = reactive({
                 },
 
             ],
-            onSelect: function (item) {
-                art.subtitle.switch(item.url, {
-                    name: item.html,
-                });
-                return item.html;
-            },
         },
-        {
-            html: 'Slider',
-            icon: '<img width="22" heigth="22" src="/src/assets/img/state.svg">',
-            tooltip: '5x',
-            range: [5, 1, 10, 0.1],
-            onRange: function (item) {
-                return item.range + 'x';
-            },
-        },
+
     ],
-    contextmenu: [
-        {
-            html: 'Custom menu',
-            click: function (contextmenu) {
-                console.info('You clicked on the custom menu');
-                contextmenu.show = false;
-            },
-        },
-    ],
+
 
     quality: [
         {
             default: true,
-            html: 'Normal',
+            html: 'auto',
             url: videoSrc || '',
         },
     ],
 
-    thumbnails: {
-        url: thumbnailSrc || '',
-        number: 60,
-        column: 10,
-    },
 
     subtitle: {
         url: subtitleSrc || '',
@@ -110,29 +69,14 @@ const options = reactive({
         style: {
             color: '#000000',
             fontSize: '20px',
-            fontWeight: "100"
         },
         encoding: 'utf-8',
     },
-   
-    controls: [
-        {
-            position: 'right',
-            html: 'Control',
-            index: 1,
-            tooltip: 'Control Tooltip',
-            style: {
-                marginRight: '20px',
-            },
-            click: function () {
-                console.info('You clicked on the custom control');
-            },
-        },
-    ],
+
     icons: {
-        loading: '<img src="/src/assets/img/ploading.gif">',
-        state: '<img width="150" heigth="150" src="/src/assets/img/state.svg">',
-        indicator: '<img width="16" heigth="16" src="/src/assets/img/indicator.svg">',
+        loading: `<img src=${loadingIcon}>`,
+        state: `<img width="150" heigth="150" src=${slider}>`,
+        indicator: `<img width="16" heigth="16" src=${indicatorIcon}>`,
     },
 })
 
@@ -145,6 +89,7 @@ onMounted(() => {
         })
 
         videoholder.on('video:seeked', () => {
+            console.log(videoholder.currentTime)
             videoStore.chooseTimestamp(videoholder.currentTime)
 
         })

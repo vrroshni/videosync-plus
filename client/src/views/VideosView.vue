@@ -16,13 +16,12 @@ onMounted(() => {
 
 </script>
 <template>
-    <SearchVideos v-if="videoStore.allVideos.length > 0" />
-    <div class="h-screen w-screen sm:px-8 md:px-10 sm:py-8">
-        <main class="container mx-auto rounded-sm shadow-md h-full bg-white pt-5">
+    <SearchVideos />
+    <div class="h-full w-screen sm:px-8 md:px-10 sm:py-8">
+        <main class="container mx-auto rounded-sm shadow-md h-full bg-transparent pt-5">
             <Suspense>
                 <Videos />
                 <template #fallback>
-                    <!-- <VideosViewSkeletonVue /> -->
                     <VideosViewSkeleton />
                 </template>
             </Suspense>

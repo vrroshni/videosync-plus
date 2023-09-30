@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { generateUniqueId, secondsToTimestamp, toast } from '../config/helpers';
+import { generateUniqueId, parseTimestamp, secondsToTimestamp, toast } from '../config/helpers';
 import { getallVideos, uploadVideo } from '../api/videoApi';
 
 
@@ -38,7 +38,8 @@ export const useVideoStore = defineStore('videos', {
             if (this.hasDuplicateTimestamps(time)) {
                 
                 toast.error("Subtitle for this timestamp already exist",
-                { position: "bottom-center"}
+                { position: "bottom-center",
+                autoClose: 1000,}
             )
                 return
             }
@@ -49,9 +50,11 @@ export const useVideoStore = defineStore('videos', {
             }
             if (this.active === "ending timestamp") {
                 console.log(time, this.newSubtitle.startingTimestamp)
-                if (time < this.newSubtitle.startingTimestamp) {
+                if (parseTimestamp(time) < parseTimestamp(this.newSubtitle.startingTimestamp)) {
                     toast.error("Ending timestamp must be greater than the starting timestamp.",
-                        { position: "bottom-center"}
+                        { position: "bottom-center",
+                        autoClose: 1000,
+                    }
                     )
                     return
                 }
@@ -145,7 +148,8 @@ export const useVideoStore = defineStore('videos', {
                 console.log(this.allVideos, "videosssssss")
 
             } catch (error) {
-                throw error
+                toast.error("Something went wrong")
+                
 
             }
         }

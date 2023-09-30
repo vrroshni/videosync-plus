@@ -28,6 +28,7 @@ class VideosList(APIView):
             data = request.data
             if Video.objects.filter(video_title=data['video_title']).first():
                 return Response('Video title already exists',status=status.HTTP_409_CONFLICT)
+            print(data)
             serializer = VideoSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
@@ -40,8 +41,10 @@ class VideosList(APIView):
                     video_instance=Video.objects.get(video_title=data['video_title'])
                     video_instance.subtitle_file.save(f"{data['video_title']}.srt", ContentFile(srt_content.encode('utf-8')))
                 return Response(status=status.HTTP_201_CREATED)
+            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
+            print(e,"eeeeeeeeeeee")
             return Response("Somethimg went wrong", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

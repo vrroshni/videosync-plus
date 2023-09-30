@@ -33,8 +33,7 @@ const videoStore = useVideoStore()
               {{ subtitle.subtitle }}
             </div>
           </div>
-          <button class="px-2 py-1 bg-black text-white rounded-lg shadow-md"
-            @click="() => videoStore.deleteSubtitleById(subtitle.id)">Detete</button>
+          <i class="fa-solid fa-trash text-xl text-black hover:text-gray-700 cursor pointer"  @click="() => videoStore.deleteSubtitleById(subtitle.id)"></i>
         </div>
 
 
