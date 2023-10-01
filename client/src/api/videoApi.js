@@ -45,3 +45,21 @@ export const getVideo = async (id) => {
         throw error
     }
 }
+
+export const watchedVideo = async (id) => {
+    try {
+        const { data } = await axiosClient.patch(`videosync/video/${id}/`, config)
+        return data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const searchVideos = async (search) => {
+    try {
+        const { data } = await axiosClient.get(`videosync/search/${search}/`, config)
+        return data
+    } catch (error) {
+        throw error
+    }
+}

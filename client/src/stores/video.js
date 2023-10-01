@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { generateUniqueId, secondsToTimestamp, toast } from '../config/helpers';
+import { generateSRT, generateUniqueId, parseTimestamp, secondsToTimestamp, toast } from '../config/helpers';
 import { getallVideos, uploadVideo } from '../api/videoApi';
 
 
@@ -9,12 +9,12 @@ export const useVideoStore = defineStore('videos', {
             videoTitle: '',
             videoDescription: '',
             videoFile: '',
-            videoThumbnail:'',
+            videoThumbnail: '',
             subtitles: []
         },
-    
 
-        uploadProgress:0,
+        srtFile: '',
+        uploadProgress: 0,
         allVideos: [],
 
         newSubtitle: {
@@ -23,22 +23,30 @@ export const useVideoStore = defineStore('videos', {
             subtitle: ''
         },
         previewVideo: '',
+        previewThumbnail: '',
         timeStamp: '',
         active: ''
     }),
 
     actions: {
-        chooseTimestamp(time) {
 
+        /**
+     * Choose a timestamp for subtitles.
+     * @param {number} time - The selected timestamp.
+     */
+        chooseTimestamp(time) {
 
             time = secondsToTimestamp(time)
 
 
             if (this.hasDuplicateTimestamps(time)) {
-                
+
                 toast.error("Subtitle for this timestamp already exist",
-                { position: "bottom-center"}
-            )
+                    {
+                        position: "bottom-center",
+                        autoClose: 1000,
+                    }
+                )
                 return
             }
 
@@ -48,16 +56,18 @@ export const useVideoStore = defineStore('videos', {
             }
             if (this.active === "ending timestamp") {
                 console.log(time, this.newSubtitle.startingTimestamp)
-                if (time < this.newSubtitle.startingTimestamp) {
+                if (parseTimestamp(time) < parseTimestamp(this.newSubtitle.startingTimestamp)) {
                     toast.error("Ending timestamp must be greater than the starting timestamp.",
-                        { position: "bottom-center"}
+                        {
+                            position: "bottom-center",
+                            autoClose: 1000,
+                        }
                     )
                     return
                 }
-                console.log("hello")
                 this.timeStamp = time
                 this.newSubtitle.endingTimestamp = time
-                console.log("hello")
+
             }
 
         },
@@ -65,13 +75,34 @@ export const useVideoStore = defineStore('videos', {
 
 
 
-        // Check if any subtitle in the array has the same start and end timestamps
-        hasDuplicateTimestamps(timestamp) {
+    /**
+     * Check if any subtitle in the array has the same start and end timestamps.
+     * @param {string} timestamp - The timestamp to check.
+     * @returns {boolean} True if there are duplicates, otherwise false.
+     */        hasDuplicateTimestamps(timestamp) {
             const { subtitles } = this.newVideo;
             return subtitles.some((subtitle) => timestamp >= subtitle.startingTimestamp && timestamp <= subtitle.endingTimestamp);
         },
 
 
+        /**
+        * Synchronize subtitles with the video and generate an SRT file.
+        */
+        syncWithVideo() {
+            this.srtFile = generateSRT(this.newVideo.subtitles)
+            console.log(this.srtFile)
+            const a = document.createElement('a');
+            a.href = this.srtFile;
+            a.download = 'subtitles.srt';
+            console.log(a)
+            a.click();
+        },
+
+
+        /**
+         * Add subtitle data to the new video.
+         * @param {string} step - The current step (e.g., 'starting timestamp').
+         */
         addSubtitleData(step) {
             this.active = step
             this.newSubtitle.id = generateUniqueId();
@@ -82,12 +113,39 @@ export const useVideoStore = defineStore('videos', {
 
 
 
+        /**
+         * Reset the active step and timestamp.
+         * @param {string} step - The step to reset.
+         */
         reset(step) {
             this.active = step
             this.timeStamp = ''
 
         },
 
+        /**
+         * Update the view count for a video.
+         * @param {string} videoId - The ID of the video.
+         */
+        async viewCount(videoId) {
+            try {
+                const video = await watchedVideo(videoId)
+                const videoIndex = this.allVideos.findIndex((video) => video.id === videoId);
+                if (videoIndex !== -1) {
+                    this.allVideos[videoIndex].view_count = video.view_count;
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+
+
+        },
+
+        /**
+         * Delete a subtitle by its ID.
+         * @param {string} subtitleId - The ID of the subtitle to delete.
+         */
         deleteSubtitleById(subtitleId) {
             const index = this.newVideo.subtitles.findIndex(
                 (subtitle) => subtitle.id === subtitleId
@@ -99,11 +157,13 @@ export const useVideoStore = defineStore('videos', {
 
 
 
-
+        /**
+         * Upload a new video and validate its data.
+         */
         async uploadNewVideo() {
             try {
 
-                if (!this.newVideo.videoTitle.trim() || !this.newVideo.videoDescription.trim() || !this.newVideo.videoFile ||  !this.newVideo.videoThumbnail) {
+                if (!this.newVideo.videoTitle.trim() || !this.newVideo.videoDescription.trim() || !this.newVideo.videoFile || !this.newVideo.videoThumbnail) {
                     throw new Error('Video title, description , thumbnail and Video file are required.');
                 }
 
@@ -118,7 +178,7 @@ export const useVideoStore = defineStore('videos', {
                 }
 
                 this.previewVideo = ''
-                const newVideo = await uploadVideo(this.newVideo,(progress) => {
+                const newVideo = await uploadVideo(this.newVideo, (progress) => {
                     this.uploadProgress = progress; // Update uploadProgress in the store
                 })
                 this.newVideo = {
@@ -127,16 +187,19 @@ export const useVideoStore = defineStore('videos', {
                     videoFile: '',
                     subtitles: []
                 }
-                this.uploadProgress=0
+                this.uploadProgress = 0
                 this.allVideos.push(newVideo)
             } catch (error) {
-                this.uploadProgress=0
+                this.uploadProgress = 0
                 throw error
 
             }
 
         },
 
+        /**
+         * Get all videos and update the store's state.
+         */
         async getallVideos() {
             try {
 
@@ -145,7 +208,8 @@ export const useVideoStore = defineStore('videos', {
                 console.log(this.allVideos, "videosssssss")
 
             } catch (error) {
-                throw error
+                toast.error("Something went wrong")
+
 
             }
         }

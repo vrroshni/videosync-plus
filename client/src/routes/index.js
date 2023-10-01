@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import UploadView from "../views/UploadView.vue";
 import VideoView from "../views/VideoView.vue";
 import VideosView from "../views/VideosView.vue";
+import AnalyticsView from "../views/AnalyticsView.vue";
 
  const router = createRouter({
     history: createWebHistory(),
@@ -9,26 +10,22 @@ import VideosView from "../views/VideosView.vue";
       {
         path: "/",
         component: UploadView,
-        meta:{
-          enterClass:"animate__animated animate__fadeInLeft",
-          leaveClass:"animate__animated animate__fadeOutRight"
-        }
+       
       },
       {
         path: "/videos",
         component: VideosView,
-        meta:{
-          enterClass:"animate__animated animate__fadeInRight",
-          leaveClass:"animate__animated animate__fadeOutLeft"
-        }
+        
       },
       {
         path: "/videos/:id",
         component: VideoView,
-        meta:{
-          enterClass:"animate__animated animate__fadeInRight",
-          leaveClass:"animate__animated animate__fadeOutLeft"
-        }
+        
+      },
+      {
+        path: "/analytics",
+        component: AnalyticsView,
+        
       },
     ],
     linkExactActiveClass: 'text-black bg-gray-100 rounded-full px-3 py-1.5',

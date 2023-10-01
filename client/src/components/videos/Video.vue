@@ -7,26 +7,58 @@ const router = useRouter()
 
 </script>
 <template>
-    <div @click="router.push(`/videos/${video.id}`)"
-        class="overflow-hidden w-3/4 md:w-1/3 bg-white m-4 shadow-xl rounded-lg py-4 px-4  flex flex-col justify-centertransform transition duration-300 ease-in-out cursor-pointer hover:-translate-y-2">
-        <div class="h-26 w-full overflow-hidden video-link">
-            <img :src="IMAGE_API_URL + video.video_thumbnail" alt="" class="thumbnail" />
-        </div>
-        <div class="text-sm text-gray-500 m-2">{{ formatDate(video.added_date) }}</div>
-        <div class="font-bold text-lg text-black m-2">{{ video.video_title }}</div>
-        <div class="text-gray-500 m-2 text-sm"><router-link :to="`/videos/${video.id}`"> {{ video.video_description?.length > 20 ?
-            video.video_description.slice(0, 31) + '...more' : video.video_description }}</router-link></div>
-        <!-- <div class="flex justify-between">
-            <div class="flex m-2">
-                <ion-icon name="chatbubble-outline" class="m-1 text-gray-500"></ion-icon>
-                <div class="text-gray-500 m-1 mb-4 text-sm">896</div>
-                <ion-icon name="eye-outline" class="m-1 text-gray-500"></ion-icon>
-                <div class="text-gray-500 m-1 mb-4 text-sm">5648</div>
-            </div>
-            <div class="m-2">
-                <ion-icon name="share-social-outline"
-                    class="m-1 text-blue-500 hover:text-pink-400 cursor-pointer text-xl "></ion-icon>
-            </div>
-        </div> -->
+  <div @click="router.push(`/videos/${video.id}`)"
+    class="overflow-hidden w-3/4 md:w-1/3 bg-white hover:bg-gray-100 m-4 shadow-xl rounded-lg py-4 px-4  flex flex-col justify-center transform transition duration-300 ease-in-out cursor-pointer hover:-translate-y-2 min-h-[20rem] ">
+    <div class="h-26  w-full overflow-hidden video-link">
+      <img :src="IMAGE_API_URL + video.video_thumbnail" alt="" class="thumbnail h-full w-full" />
     </div>
+    <div class="text-sm text-gray-500 m-2">{{ formatDate(video.added_date) }}</div>
+    <div class="font-bold text-lg text-black m-2">{{ video.video_title?.length > 40 ? video.video_title.slice(0, 40) +
+      '...more' : video.video_title }}</div>
+    <div class="text-gray-500 m-2 text-sm"><router-link :to="`/videos/${video.id}`"> {{ video.video_description?.length >
+      60 ?
+      video.video_description.slice(0, 60) + '...more' : video.video_description }}</router-link></div>
+    <div class="flex justify-start items-center">
+      <div class="flex m-2  justify-center  items-center">
+        <i class="fa-regular fa-eye m-1 text-gray-500"></i>
+        <div class="text-gray-500 m-1 text-sm">{{ video.view_count > 0 }} views </div>
+      </div>
+
+    </div>
+  </div>
 </template>
+<style scoped>
+.video-link {
+  position: relative;
+}
+
+
+.video-link .thumbnail {
+  width: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.video-link::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: url("//cyara.com/wp-content/uploads/resources/play-button.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 20%;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, .4));
+}
+
+.video-link:hover::after {
+  background-size: 22%;
+  -webkit-transition: background-size .2s ease-in-out;
+  -moz-transition: background-size .2s ease-in-out;
+  -o-transition: background-size .2s ease-in-out;
+  transition: background-size .2s ease-in-out;
+}
+</style>

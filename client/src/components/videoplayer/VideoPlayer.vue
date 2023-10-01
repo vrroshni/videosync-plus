@@ -2,20 +2,22 @@
 import { ref, onMounted, nextTick, reactive } from 'vue';
 import Artplayer from 'artplayer';
 import { useVideoStore } from '../../stores/video';
-import { IMAGE_API_URL } from '../../config/axios';
+import { slider, loadingIcon, indicatorIcon } from '../../config/helpers';
+import { watchedVideo } from '../../api/videoApi';
 const videoStore = useVideoStore()
 
-const { video } = defineProps(['video'])
-console.log(video,"videovideo")
-const videoUrl = videoStore.previewVideo || IMAGE_API_URL + video?.video_file
-const srcUrl = video?.subtitle_file ? IMAGE_API_URL + video?.subtitle_file : ''
-const thumbnail = videoStore.newVideo.videoThumbnail ||  IMAGE_API_URL + video?.video_thumbnail
-console.log(videoUrl,srcUrl,thumbnail)
+const { videoSrc, subtitleSrc, thumbnailSrc, id } = defineProps(['videoSrc', 'subtitleSrc', 'thumbnailSrc', 'id'])
+console.log(subtitleSrc)
+console.log(videoStore.srtFile)
 const player = ref(null)
+const hasSentApiCall = ref(false);
+const isWatching = ref(false);
 
 const options = reactive({
+    // Artplayer options
     container: player.value,
-    url: videoUrl,
+    url: videoSrc || '',
+    poster: thumbnailSrc || '',
     volume: 0.5,
     isLive: false,
     muted: true,
@@ -26,17 +28,14 @@ const options = reactive({
     screenshot: true,
     setting: true,
     loop: true,
-    flip: true,
     playbackRate: true,
     aspectRatio: true,
     fullscreen: true,
     fullscreenWeb: true,
-    subtitleOffset: true,
     miniProgressBar: true,
     mutex: true,
     backdrop: true,
     playsInline: true,
-    autoPlayback: true,
     airplay: true,
     theme: '#23ade5',
     lang: navigator.language.toLowerCase(),
@@ -47,151 +46,103 @@ const options = reactive({
         {
             width: 200,
             html: 'Subtitle',
-            tooltip: 'Bilingual',
-            // icon: '<img width="22" heigth="22" src="/src/assets/img/subtitle.svg">',
             selector: [
                 {
-                    html: 'Display',
-                    tooltip: 'Show',
-                    switch: true,
-                    onSwitch: function (item) {
-                        item.tooltip = item.switch ? 'Hide' : 'Show';
-                        art.subtitle.show = !item.switch;
-                        return !item.switch;
-                    },
+                    default: true,
+                    html: 'English',
+                    url: subtitleSrc || '',
                 },
-                // {
-                //     default: true,
-                //     html: 'Bilingual',
-                //     url: srcUrl,
-                // },
 
             ],
-            onSelect: function (item) {
-                art.subtitle.switch(item.url, {
-                    name: item.html,
-                });
-                return item.html;
-            },
         },
-        {
-            html: 'Slider',
-            icon: '<img width="22" heigth="22" src="/src/assets/img/state.svg">',
-            tooltip: '5x',
-            range: [5, 1, 10, 0.1],
-            onRange: function (item) {
-                return item.range + 'x';
-            },
-        },
+
     ],
-    contextmenu: [
-        {
-            html: 'Custom menu',
-            click: function (contextmenu) {
-                console.info('You clicked on the custom menu');
-                contextmenu.show = false;
-            },
-        },
-    ],
+
 
     quality: [
         {
             default: true,
-            html: 'Normal',
-            url: videoUrl,
+            html: 'auto',
+            url: videoSrc || '',
         },
     ],
-    thumbnails: {
-        url: thumbnail,
-        number: 60,
-        column: 10,
-    },
+
+
     subtitle: {
-        url: srcUrl,
+        url: subtitleSrc || '',
         type: 'srt',
         style: {
             color: '#000000',
             fontSize: '20px',
-            fontWeight: "100"
         },
         encoding: 'utf-8',
     },
-    // highlight: [
-    //     {
-    //         time: 15,
-    //         text: 'One more chance',
-    //     },
-    //     {
-    //         time: 30,
-    //         text: '谁でもいいはずなのに',
-    //     },
-    //     {
-    //         time: 45,
-    //         text: '夏の想い出がまわる',
-    //     },
-    //     {
-    //         time: 60,
-    //         text: 'こんなとこにあるはずもないのに',
-    //     },
-    //     {
-    //         time: 75,
-    //         text: '终わり',
-    //     },
-    // ],
-    controls: [
-        {
-            position: 'right',
-            html: 'Control',
-            index: 1,
-            tooltip: 'Control Tooltip',
-            style: {
-                marginRight: '20px',
-            },
-            click: function () {
-                console.info('You clicked on the custom control');
-            },
-        },
-    ],
+
     icons: {
-        loading: '<img src="/src/assets/img/ploading.gif">',
-        state: '<img width="150" heigth="150" src="/src/assets/img/state.svg">',
-        indicator: '<img width="16" heigth="16" src="/src/assets/img/indicator.svg">',
+        loading: `<img src=${loadingIcon}>`,
+        state: `<img width="150" heigth="150" src=${slider}>`,
+        indicator: `<img width="16" heigth="16" src=${indicatorIcon}>`,
     },
 })
-const pause = () => {
-    console.log("pause calledddddddd")
-    player.on('')
-}
 
+// Lifecycle hook: Initialize Artplayer
 onMounted(() => {
     nextTick(() => {
+        // Create a new instance of the Artplayer video player with provided options.
         const videoholder = new Artplayer({
             ...options,
             container: player.value
         })
-        // videoholder.on('ready',()=>{
-        //     videoholder.play()
-        //     console.info(videoholder.currentTime);
-        //     console.log("video is palyeddd")
-        //     console.info(videoholder.duration);
-        //     pause()
-        // })    
-        videoholder.on('seek', () => {
-            console.info(videoholder.currentTime, 'ccccccccccc');
-            videoholder.pause()
+
+
+
+         // Handle the 'video:seeked' event when the user seeks to a different position in the video.
+        videoholder.on('video:seeked', () => {
+            //for adding subtitles
+            //// Update the chosen timestamp in the video store based on the current playback time.
             videoStore.chooseTimestamp(videoholder.currentTime)
 
         })
+
+
+        videoholder.on('play', () => {
+            
+            isWatching.value = true;
+
+        })
+
+
+        // Handle the 'video:timeupdate' event, triggered as the video playback progresses.
+        videoholder.on('video:timeupdate', async() => {
+            if (!hasSentApiCall.value && id) {
+                const tenPercent = videoholder.duration * 0.5;
+                if (isWatching.value && videoholder.currentTime >= tenPercent) {
+
+                    // If a certain percentage of the video has been watched and an API call hasn't been sent yet,
+                    // make an API call to mark the video as watched.
+                    await watchedVideo(id)
+
+
+                    // Reset the 'isWatching' flag to prevent additional API calls.
+                    isWatching.value = false;
+
+                    // Set 'hasSentApiCall' to true to indicate that the API call has been sent.
+                    hasSentApiCall.value = true
+                }
+            }
+        });
+
     })
 })
 
-
+// Expose refs and options
 defineExpose({
     player,
     options
 })
 </script>
 <template>
+      <!-- Artplayer container -->
     <div ref="player" style="width:32.5rem  ;height:22rem;"> </div>
 </template>
 
