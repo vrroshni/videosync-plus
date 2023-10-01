@@ -36,11 +36,11 @@ const getSearchResults = () => {
 <template>
     <main class="container text-gray-900 flex items-center justify-center">
         <div class="pt-8 mb-8 relative w-3/4 md:w-1/2 ">
-            <input type="text" v-model="searchQuery" @input="getSearchResults" placeholder="Search for a city or state"
+            <input type="text" v-model="searchQuery" @input="getSearchResults" placeholder="Search for a video by title or description"
                 class="py-2 px-1 w-full bg-transparent border-b  border-gray-500 focus:outline-none text-gray-900 placeholder:text-gray-600 placeholder:text-base focus:shadow-[0px_1px_0_0_#004E71]" />
-            <ul class="absolute bg-purple-100 z-20 w-full shadow-md py-2 px-1 top-[75px]"
+            <ul class="absolute bg-purple-100 z-20 w-full shadow-md py-2 px-2 top-[75px]"
                 v-if="videoSearchResults">
-                <p class="py-2 text-red-500" v-if="searchError">
+                <p class="py-2  text-red-500" v-if="searchError">
                     Sorry, something went wrong, please try again.
                 </p>
                 <p class="py-2 text-red-500" v-if="!searchError && videoSearchResults.length === 0">
