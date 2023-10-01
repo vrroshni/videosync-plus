@@ -4,7 +4,7 @@ const router = useRouter()
 </script>
 
 <template>
-    <div class="lg:px-24 lg:py-24 md:py-20 md:px-44 px-4 py-24 items-center flex justify-center bg-white">
+    <div class="lg:px-24 lg:py-24 md:py-16 md:px-44 px-4 py-14 items-center flex justify-center bg-white">
         <div class=" w-full xl:w-1/2 relative pb-12 lg:pb-0 items-center flex justify-center">
             <div class="relative">
                 <div class="absolute">
