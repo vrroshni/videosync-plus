@@ -20,8 +20,8 @@ VideoSync is a web application developed using Vue.js for the frontend and Djang
 
 ### Prerequisites
 
-- Node.js and npm installed on your system.
-- Python and Django installed for the backend.
+- Node.js installed on your system.
+- Python for the backend.
 
 ### Installation
 
