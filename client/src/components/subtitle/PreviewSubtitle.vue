@@ -9,11 +9,11 @@ const videoStore = useVideoStore();
 <!-- Subtitles can be deleted individually by clicking on the trash icon. -->
 
 <template>
-  <div class="flex items-center justify-center w-full">
-    <div class="flex-col items-center justify-center text-gray-800 text-center w-full">
+  <div class="flex items-center justify-center w-full  p-4">
+    <div class="flex-col items-center justify-center text-gray-800 text-center w-full  mb-4">
       <div class="flex items-center flex-col justify-center text-xl font-bold pb-4 gap-2">
         {{ videoStore.newVideo.subtitles.length > 0 ? "Added Subtitles" : "No Subtitles Added" }}
-        <div v-if="videoStore.newVideo.subtitles.length > 0" class="flex items-center justify-end text-white font-normal text-md">
+        <div v-if="videoStore.newVideo.subtitles.length > 0" class="flex items-center justify-end text-white font-normal text-sm md:text-lg">
           <button @click="videoStore.syncWithVideo" class="bg-black px-2 py-1 rounded-lg shadow-md">SRT File</button>
         </div>
       </div>
@@ -22,19 +22,19 @@ const videoStore = useVideoStore();
         <div class="w-full bg-gray-200 rounded-lg px-3 py-1.5 flex flex-row items-center justify-between" v-for="(subtitle, index) in videoStore.newVideo.subtitles" :key="index">
           <div class="flex flex-col items-start justify-start">
             <div class="flex items-start justify-start gap-2">
-              <div class="text-lg font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent flex items-center justify-center">
+              <div class="text-xs md:text-lg font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent flex items-center justify-center">
                 {{ subtitle.startingTimestamp }}
-                <span class="text-md font-normal ml-2 text-black">{{ "--->" }}</span>
+                <span class="text-xs md:text-md font-normal ml-2 text-black">{{ "--->" }}</span>
               </div>
-              <div class="text-lg font-bold bg-gradient-to-l from-fuchsia-500 to-orange-500 bg-clip-text text-transparent">
+              <div class="text-xs md:text-lg font-bold bg-gradient-to-l from-fuchsia-500 to-orange-500 bg-clip-text text-transparent">
                 {{ subtitle.endingTimestamp }}
               </div>
             </div>
-            <div class="text-base font-light text-gray-800 flex items-start justify-start capitalize">
+            <div class="text-sm md:text-base font-light text-gray-800 flex items-start justify-start capitalize">
               {{ subtitle.subtitle }}
             </div>
           </div>
-          <i class="fa-solid fa-trash text-xl text-black hover:text-gray-700 cursor-pointer" @click="() => videoStore.deleteSubtitleById(subtitle.id)"></i>
+          <i class="fa-solid fa-trash  text-xs md:text-xl text-black hover:text-gray-700 cursor-pointer" @click="() => videoStore.deleteSubtitleById(subtitle.id)"></i>
         </div>
       </div>
     </div>
