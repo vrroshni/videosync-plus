@@ -28,8 +28,8 @@ const handleSubtitle = () => {
     const { subtitle } = videoStore.newSubtitle;
     if (!subtitle) {
         error.value = "Enter the Subtitle"
+        setTimeout(()=>error.value='',1000)
         return false
-
     }
 
     currentStep.value = 0

@@ -13,7 +13,7 @@ const videoStore = useVideoStore();
     <div class="flex-col items-center justify-center text-gray-800 text-center w-full">
       <div class="flex items-center flex-col justify-center text-xl font-bold pb-4 gap-2">
         {{ videoStore.newVideo.subtitles.length > 0 ? "Added Subtitles" : "No Subtitles Added" }}
-        <div v-if="videoStore.newVideo.subtitles.length > 0" class="flex items-center justify-end text-white font-medium text-md">
+        <div v-if="videoStore.newVideo.subtitles.length > 0" class="flex items-center justify-end text-white font-normal text-md">
           <button @click="videoStore.syncWithVideo" class="bg-black px-2 py-1 rounded-lg shadow-md">SRT File</button>
         </div>
       </div>
