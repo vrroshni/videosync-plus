@@ -2,10 +2,13 @@
     <div class="h-[70%] w-[70%] sm:px-8 md:px-10 sm:py-8">
         <main class="container mx-auto rounded-sm shadow-md  bg-transparent pt-5">
 
-            <div class="chartgrid p-16 h-96" v-if="videoStore.allVideos.some(video => video.view_count > 0)">
+            <div class="chartgrid p-16 h-96" v-if="videoStore.allVideos?.some(video => video.view_count > 0)">
                 <Bar v-if="loaded" :options="chartOptions" :data="chartData" />
             </div>
-            <h1 class="font-bold text-2xl" v-else>No Videos Uploaded to show Analytics </h1>
+
+            <div class="flex justify-center items-center h-full py-20" v-else>
+                <h1 class="font-bold text-2xl">No View Analytics Detected📈 </h1>
+            </div>
 
         </main>
     </div>

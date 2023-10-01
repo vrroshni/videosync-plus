@@ -7,8 +7,6 @@ import { watchedVideo } from '../../api/videoApi';
 const videoStore = useVideoStore()
 
 const { videoSrc, subtitleSrc, thumbnailSrc, id } = defineProps(['videoSrc', 'subtitleSrc', 'thumbnailSrc', 'id'])
-console.log(subtitleSrc)
-console.log(videoStore.srtFile)
 const player = ref(null)
 const hasSentApiCall = ref(false);
 const isWatching = ref(false);

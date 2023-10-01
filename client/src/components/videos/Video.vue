@@ -21,7 +21,7 @@ const router = useRouter()
     <div class="flex justify-start items-center">
       <div class="flex m-2  justify-center  items-center">
         <i class="fa-regular fa-eye m-1 text-gray-500"></i>
-        <div class="text-gray-500 m-1 text-sm">{{ video.view_count > 0 }} views </div>
+        <div class="text-gray-500 m-1 text-sm">{{ video.view_count }} views </div>
       </div>
 
     </div>

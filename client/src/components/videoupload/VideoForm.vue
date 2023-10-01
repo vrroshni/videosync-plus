@@ -84,7 +84,7 @@ const onChange = (e) => {
             <label for="message" class="">Video description</label>
             <textarea id="message" rows="2" name="videoDescription" @input="onChange"
                 class="block px-4 py-2 w-full mt-2  text-gray-700 bg-gray-50 rounded-lg border border-gray-300  focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent "
-                placeholder="Leave a comment..."></textarea>
+                placeholder="Add video description..."></textarea>
 
             <!-- Display validation error message if it exists -->
             <ErrorMessage v-show="error.videoDescription" :message="error.videoDescription" />

@@ -55,7 +55,6 @@ export const useVideoStore = defineStore('videos', {
                 this.newSubtitle.startingTimestamp = time
             }
             if (this.active === "ending timestamp") {
-                console.log(time, this.newSubtitle.startingTimestamp)
                 if (parseTimestamp(time) < parseTimestamp(this.newSubtitle.startingTimestamp)) {
                     toast.error("Ending timestamp must be greater than the starting timestamp.",
                         {
@@ -90,11 +89,9 @@ export const useVideoStore = defineStore('videos', {
         */
         syncWithVideo() {
             this.srtFile = generateSRT(this.newVideo.subtitles)
-            console.log(this.srtFile)
             const a = document.createElement('a');
             a.href = this.srtFile;
             a.download = 'subtitles.srt';
-            console.log(a)
             a.click();
         },
 
@@ -136,7 +133,7 @@ export const useVideoStore = defineStore('videos', {
                 }
 
             } catch (error) {
-                console.log(error)
+                console.error(error)
             }
 
 
@@ -169,7 +166,6 @@ export const useVideoStore = defineStore('videos', {
 
                 // Validate subtitles if there are any
                 if (this.newVideo.subtitles.length > 0) {
-                    console.log(this.newVideo.subtitles)
                     const subtitlesValid = this.newVideo.subtitles.every(subtitle => subtitle.startingTimestamp && subtitle.endingTimestamp && subtitle.subtitle.trim());
 
                     if (!subtitlesValid) {
@@ -205,11 +201,10 @@ export const useVideoStore = defineStore('videos', {
 
                 const data = await getallVideos()
                 this.allVideos = data
-                console.log(this.allVideos, "videosssssss")
 
             } catch (error) {
-                toast.error("Something went wrong")
-
+                
+                console.error("Something went wrong")
 
             }
         }

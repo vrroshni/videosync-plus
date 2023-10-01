@@ -22,10 +22,10 @@ const onChange = (e) => {
     return
   }
 
-  // if (file.size > maxSize) {
-  //   error.value = 'File size exceeds the 10MB limit. Please choose a smaller file.';
-  //   return
-  // }
+  if (file.size > maxSize) {
+    error.value = 'File size exceeds the 10MB limit. Please choose a smaller file.';
+    return
+  }
 
   const videoSrc = URL.createObjectURL(file);
   videoStore.$patch((state) => {

@@ -33,7 +33,6 @@ const id = route.params.id
 const getVideoInfo = async () => {
     try {
         video.value = await getVideo(id)
-        console.log(video.value)
     } catch (error) {
         toast.error("This video does not exist!")
     }
