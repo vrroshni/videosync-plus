@@ -141,7 +141,7 @@ defineExpose({
 </script>
 <template>
       <!-- Artplayer container -->
-    <div ref="player" style="width:32.5rem  ;height:22rem;"> </div>
+    <div ref="player" class="md:w-[32rem] md:h-[20rem] h-48 w-60"> </div>
 </template>
 
 <style scoped></style>

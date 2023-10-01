@@ -77,8 +77,8 @@ const onChange = (e) => {
 </script>
 <template>
     <div class="border-none border-2 border-gray-400  flex flex-col justify-center items-center text-gray-500 gap-2">
-        <h1 class="text-2xl font-bold text-purple-900  capitalize ">Video settings</h1>
-        <p>Add a new video and add appropriate subtitle as per you needs</p>
+        <h1 class="text-xl md:text-2xl font-bold text-purple-900  capitalize ">Video settings</h1>
+        <p class="text-sm">Add a new video and add appropriate subtitle as per you needs</p>
         <div class="w-full">
             <label for="username">Video Title</label>
             <input id="username" type="text" name="videoTitle" @input="onChange"
@@ -98,21 +98,21 @@ const onChange = (e) => {
             <!-- Display validation error message if it exists -->
             <ErrorMessage v-show="error.videoDescription" :message="error.videoDescription" />
         </div>
-        <div class="w-full pb-3 flex justify-between gap-2">
-            <div class="w-5/6">
+        <div class="w-full pb-3 flex justify-between gap-2  flex-col md:flex-row">
+            <div class=" md:w-5/6 w-full">
                 <label for="file_input">Upload file</label>
                 <input name="videoThumbnail" @input="onChange" accept="image/*"
                     class="block px-4 py-2 w-full mt-2  text-gray-700 bg-gray-50 rounded-lg border border-gray-300  focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent "
                     aria-describedby="file_input_help" id="file_input" type="file">
-                <p class="mt-1 text-sm text-gray-500 " id="file_input_help"> PNG, JPG or GIF (MAX.
+                <p class="mt-1 text-xs md:text-sm text-gray-500 " id="file_input_help"> PNG, JPG or GIF (MAX.
                     800x400px).</p>
                 <ErrorMessage v-show="error.videoThumbnail" :message="error.videoThumbnail" />
 
 
             </div>
-            <div class="w-1/6 flex justify-center items-center">
+            <div class="md:w-1/6 flex justify-center items-center w-full">
                 <div class="image-input w-20  h-20 " :style="{ 'background-image': `url(${videoStore.previewThumbnail})` }">
-                    <span v-if="!videoStore.previewThumbnail" class="placeholder rounded-lg text-sm md:text-base">
+                    <span v-if="!videoStore.previewThumbnail" class="placeholder rounded-lg text-sm md:text-base px-2">
                         Preview
                     </span>
 

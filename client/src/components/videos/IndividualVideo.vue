@@ -1,9 +1,9 @@
 <template>
     <div class="flex flex-col lg:flex-row max-w-7xl justify-center items-center p-2 space-y-3 w-full " v-if="video">
         <div class="flex flex-col text-black  md:items-start items-center justify-between space-y-3 px-8">
-            <div class="text-3xl font-bold  ">{{ video.video_title }}</div>
-            <div class="text-lg text-gray-600  ">{{ video.video_description }}</div>
-            <div class="text-base">posted at {{ formatDate(video.added_date) }}</div>
+            <div class="text-lg md:text-3xl font-bold  ">{{ video.video_title }}</div>
+            <div class="text-lg md:text-lg text-gray-600  ">{{ video.video_description }}</div>
+            <div class="text-lg md:text-base">posted at {{ formatDate(video.added_date) }}</div>
         </div>
         <div class="flex space-x-2 md:space-x-6 md:m-4">
             <VideoPlayer :videoSrc="IMAGE_API_URL + video?.video_file"
