@@ -7,6 +7,8 @@ VideoSync is a web application developed using Vue.js for the frontend and Djang
 - **Upload Videos:** Users can upload their videos to the platform.
 - **Custom Subtitles:** Add custom subtitles to specific timestamps in the video.
 - **Subtitle Export:** Export the video with custom subtitles.
+- **Search Functionality:** Implemented search functionality with debouncing to enhance user interactions and reduce unnecessary API calls.
+- **Data Visualization:**Added data visualizations in the form of bar charts to display video watch counts for improved data presentation.
 
 ## Technologies Used
 
@@ -18,8 +20,8 @@ VideoSync is a web application developed using Vue.js for the frontend and Djang
 
 ### Prerequisites
 
-- Node.js and npm installed on your system.
-- Python and Django installed for the backend.
+- Node.js installed on your system.
+- Python for the backend.
 
 ### Installation
 
